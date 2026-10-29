@@ -1,0 +1,6 @@
+numpy
+onnxruntime>=1.26.0
+placo>=0.9.23
+pollen_bmi088_imu_library==1.0.0rc1
+rustypot>=1.13.1
+microban-model

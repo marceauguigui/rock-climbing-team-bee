@@ -1,0 +1,158 @@
+{
+ "1": {
+  "root_pos": [
+   0.3850003050674948,
+   -0.11701666081953137,
+   0.16912706117913648
+  ],
+  "root_quat": [
+   0.7069035090353568,
+   -0.01696310924611398,
+   0.016962146944737872,
+   0.7069030820481892
+  ],
+  "joints": {
+   "head": 0.0,
+   "right_shoulder_pitch": -1.318591534937419,
+   "right_shoulder_roll": -0.11524907464872308,
+   "right_elbow": 0.49704590021710365,
+   "right_hip_yaw": -0.007401444256207828,
+   "right_hip_roll": -0.00703778368452585,
+   "right_hip_pitch": -0.07244011855101093,
+   "right_knee": -0.03823370272476706,
+   "right_ankle_pitch": -0.0789330109497561,
+   "right_ankle_roll": 0.006417359036154209,
+   "left_shoulder_pitch": -1.3185910980127489,
+   "left_shoulder_roll": 0.11525160656941995,
+   "left_elbow": 0.49704177718899534,
+   "left_hip_yaw": 0.0074044303589907105,
+   "left_hip_roll": 0.007044845750000547,
+   "left_hip_pitch": -0.07243944694058288,
+   "left_knee": -0.03823460357363586,
+   "left_ankle_pitch": -0.07893422055415258,
+   "left_ankle_roll": -0.006418363831975796
+  },
+  "start": {
+   "left_hand": [
+    18,
+    22
+   ],
+   "right_hand": [
+    29,
+    22
+   ],
+   "left_foot": [
+    21,
+    2
+   ],
+   "right_foot": [
+    26,
+    2
+   ]
+  }
+ },
+ "2": {
+  "root_pos": [
+   0.38500030509487454,
+   -0.11701666081953137,
+   0.17662706117913757
+  ],
+  "root_quat": [
+   0.7069035090648514,
+   -0.016963110475315367,
+   0.0169621457155359,
+   0.7069030820186928
+  ],
+  "joints": {
+   "head": 0.0,
+   "right_shoulder_pitch": -1.23012,
+   "right_shoulder_roll": -0.102943,
+   "right_elbow": 0.280384,
+   "right_hip_yaw": -0.007212,
+   "right_hip_roll": -0.006726,
+   "right_hip_pitch": -0.087831,
+   "right_knee": -0.007865,
+   "right_ankle_pitch": 0.014226,
+   "right_ankle_roll": 0.006379,
+   "left_shoulder_pitch": -1.23012,
+   "left_shoulder_roll": 0.102945,
+   "left_elbow": 0.280382,
+   "left_hip_yaw": 0.007215,
+   "left_hip_roll": 0.006733,
+   "left_hip_pitch": -0.08783,
+   "left_knee": -0.007866,
+   "left_ankle_pitch": 0.014224,
+   "left_ankle_roll": -0.00638
+  },
+  "start": {
+   "left_hand": [
+    18,
+    23
+   ],
+   "right_hand": [
+    29,
+    23
+   ],
+   "left_foot": [
+    21,
+    2
+   ],
+   "right_foot": [
+    26,
+    2
+   ]
+  }
+ },
+ "3": {
+  "root_pos": [
+   0.38500030509487454,
+   -0.11701666081953137,
+   0.17662706117913757
+  ],
+  "root_quat": [
+   0.7069035090648514,
+   -0.016963110475315367,
+   0.0169621457155359,
+   0.7069030820186928
+  ],
+  "joints": {
+   "head": 0.0,
+   "right_shoulder_pitch": -1.23012,
+   "right_shoulder_roll": -0.102943,
+   "right_elbow": 0.280384,
+   "right_hip_yaw": -0.007212,
+   "right_hip_roll": -0.006726,
+   "right_hip_pitch": -0.087831,
+   "right_knee": -0.007865,
+   "right_ankle_pitch": 0.014226,
+   "right_ankle_roll": 0.006379,
+   "left_shoulder_pitch": -1.23012,
+   "left_shoulder_roll": 0.102945,
+   "left_elbow": 0.280382,
+   "left_hip_yaw": 0.007215,
+   "left_hip_roll": 0.006733,
+   "left_hip_pitch": -0.08783,
+   "left_knee": -0.007866,
+   "left_ankle_pitch": 0.014224,
+   "left_ankle_roll": -0.00638
+  },
+  "start": {
+   "left_hand": [
+    18,
+    23
+   ],
+   "right_hand": [
+    29,
+    23
+   ],
+   "left_foot": [
+    21,
+    2
+   ],
+   "right_foot": [
+    26,
+    2
+   ]
+  }
+ }
+}

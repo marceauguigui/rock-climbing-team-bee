@@ -21,3 +21,5 @@ register_mjlab_task(
     rl_cfg=MicrobanVelocityRlCfg,
     runner_cls=VelocityOnPolicyRunner,
 )
+
+import mjlab_microban.tasks.climb
