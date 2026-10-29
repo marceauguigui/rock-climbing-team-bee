@@ -139,6 +139,28 @@ def block_mask(image, scale):
     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (k, k))
     return cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)
 
+def block_centroids(board, mask, scale, peak_ratio=0.6):
+    """Centroïdes des blocs, en séparant ceux qui se touchent dans le masque."""
+    dist = cv2.distanceTransform(mask, cv2.DIST_L2, 5)
+
+    # Sommets : le coeur de chaque bloc (distance > fraction du max global)
+    sure_fg = (dist > peak_ratio * dist.max()).astype(np.uint8)
+    n_fg, markers = cv2.connectedComponents(sure_fg)
+
+    # Marqueurs : 1 = fond, 2.. = blocs, 0 = zone inconnue à répartir
+    markers = markers + 1
+    markers[(mask == 0)] = 1
+    markers[(mask > 0) & (sure_fg == 0)] = 0
+    markers = cv2.watershed(board, markers.astype(np.int32))
+
+    min_area = 0.5 * (HOLE_SPACING * scale) ** 2
+    centroids = []
+    for label in range(2, n_fg + 1):
+        ys_, xs_ = np.nonzero(markers == label)
+        if len(xs_) < min_area:
+            continue
+        centroids.append((xs_.mean(), ys_.mean()))
+    return centroids
 
 def subdivide_board(image, xs=None, ys=None, occupation=None):
     """
@@ -160,12 +182,7 @@ def subdivide_board(image, xs=None, ys=None, occupation=None):
                        int(HOLE_SPACING * SCALE * 0.35), (0, 0, 255), 2)
     return result
 
-
 def create_occupation_matrix(image):
-    """
-    Matrice d'occupation : M[j, i] = 1 si le centre d'un bloc est sur le trou
-    (ligne j, colonne i), 0 sinon.
-    """
     board = extract_board(image)
     _, w = board.shape[:2]
     scale = w / BOARD_X
@@ -175,25 +192,20 @@ def create_occupation_matrix(image):
 
     occupation = np.zeros((len(ys), len(xs)), dtype=np.uint8)
 
-    n, _, stats, centroids = cv2.connectedComponentsWithStats(mask)
-    min_area = (HOLE_SPACING * scale) ** 2     # ignore ce qui est plus petit qu'une case
-    for k in range(1, n):                      # 0 = fond
-        if stats[k, cv2.CC_STAT_AREA] < min_area:
-            continue
-        cx, cy = centroids[k]
+    for cx, cy in block_centroids(board, mask, scale):
         i = int(np.argmin(np.abs(xs - cx)))
         j = int(np.argmin(np.abs(ys - cy)))
+
         occupation[j, i] = 1
 
-    print(f"Matrice {occupation.shape[0]} lignes x {occupation.shape[1]} colonnes, "
-          f"{occupation.sum()} blocs détectés")
-
+    print(f"Matrice {occupation.shape[0]} x {occupation.shape[1]}, "
+          f"{occupation.sum()} blocs")
     cv2.imwrite("mask.jpg", mask)
     cv2.imwrite("sub_board.jpg", subdivide_board(board, xs, ys, occupation))
     return occupation
 
 if __name__ == "__main__":
-    image = cv2.imread("image.jpg")
+    image = cv2.imread("image4.jpg")
 
     if image is None:
         raise FileNotFoundError("Impossible de charger image.jpg")
