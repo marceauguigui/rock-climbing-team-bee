@@ -15,6 +15,7 @@ dependencies = [
     "mujoco>=3.11,<4",          # tested with 3.11 and 3.16
     "numpy>=1.26",
     "pillow>=10",
+    "placo>=0.9.3",
 ]
 
 [project.scripts]
