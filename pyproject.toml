@@ -1,0 +1,9 @@
+[project]
+name = "rock-climbing-team-bee"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "placo>=0.10.2",
+]
