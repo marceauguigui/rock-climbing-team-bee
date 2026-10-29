@@ -9,7 +9,7 @@
 from mjlab.tasks.registry import register_mjlab_task
 from mjlab.tasks.velocity.rl import VelocityOnPolicyRunner
 
-from mjlab_microban.tasks.microban_velocity_env_cfg import (
+from mjlab_microban.src.mjlab_microban.tasks.velocity.microban_velocity_env_cfg import (
     make_microban_velocity_env_cfg,
     MicrobanVelocityRlCfg,
 )

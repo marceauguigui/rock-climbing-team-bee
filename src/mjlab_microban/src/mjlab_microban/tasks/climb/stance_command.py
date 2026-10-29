@@ -43,9 +43,9 @@ class StanceCommandCfg(CommandTermCfg):
 
   approach_height: float = 0.03
   approach_radius: float = 0.015
-  hook_tol: float = 0.006
+  hook_tol: float = 0.010
   success_hold_steps: int = 10
-  support_grace_steps: int = 5
+  support_grace_steps: int = 20
   transition_timeout_s: float = 4.0
 
   def build(self, env: ManagerBasedRlEnv) -> StanceCommand:
@@ -284,14 +284,14 @@ class StanceCommand(CommandTerm):
     self.support_lost[ar, self.moving] = 0
     self.transition_steps += 1
 
-    self.failed = (self.support_lost.max(-1).values > cfg.support_grace_steps) | (
-      self.transition_steps > self.timeout_steps
-    )
+    support_lost = self.support_lost.max(-1).values > cfg.support_grace_steps
+    timed_out = self.transition_steps > self.timeout_steps
+    self.failed = support_lost
     self.hooked_target = hooked_m == self.target
     self.hooked_steps = torch.where(self.hooked_target, self.hooked_steps + 1, 0)
     self.success = (self.hooked_steps >= cfg.success_hold_steps) & ~self.failed
 
-    done = self.failed | self.finished
+    done = self.failed | timed_out | self.finished
     if cfg.single_transition:
       done |= self.success
     return done

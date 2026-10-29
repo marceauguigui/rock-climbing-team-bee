@@ -12,7 +12,7 @@ from climbing_sim.wall import WALL_HEIGHT, WALL_THICKNESS, WALL_WIDTH
 from mjlab.entity import EntityArticulationInfoCfg, EntityCfg
 
 START_STATES = json.loads((Path(__file__).parent / "start_states.json").read_text())
-N_SLOTS = 16
+N_SLOTS = 32
 HOLD_FRICTION = 0.5
 
 # Holds, wall and floor only collide with the robot, never with each other.

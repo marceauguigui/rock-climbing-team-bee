@@ -73,12 +73,12 @@ def make_climb_env_cfg(stage: int = 1, play: bool = False) -> ManagerBasedRlEnvC
   }
 
   rewards = {
-    "progress": RewardTermCfg(func=mdp.progress, weight=20.0, params=CMD),
-    "trunk_progress": RewardTermCfg(func=mdp.trunk_progress, weight=10.0, params=CMD),
-    "hooked": RewardTermCfg(func=mdp.hooked_target, weight=0.1, params=CMD),
+    "progress": RewardTermCfg(func=mdp.progress, weight=50.0, params=CMD),
+    "trunk_progress": RewardTermCfg(func=mdp.trunk_progress, weight=20.0, params=CMD),
+    "hooked": RewardTermCfg(func=mdp.hooked_target, weight=2.0, params=CMD),
     "back_to_start": RewardTermCfg(func=mdp.back_to_start, weight=-0.05, params=CMD),
-    "success": RewardTermCfg(func=mdp.success, weight=10.0, params=CMD),
-    "failure": RewardTermCfg(func=mdp.failure, weight=-10.0, params=CMD),
+    "success": RewardTermCfg(func=mdp.success, weight=20.0, params=CMD),
+    "failure": RewardTermCfg(func=mdp.failure, weight=-5.0, params=CMD),
     "action_rate": RewardTermCfg(func=envs_mdp.action_rate_l2, weight=-0.0005),
     "joint_limits": RewardTermCfg(
       func=envs_mdp.joint_pos_limits, weight=-0.1, params={"asset_cfg": robot}
@@ -136,9 +136,9 @@ def make_climb_env_cfg(stage: int = 1, play: bool = False) -> ManagerBasedRlEnvC
       njmax=2048,
       mujoco=MujocoCfg(
         timestep=0.002,
-        iterations=10,
-        ls_iterations=20,
-        ccd_iterations=12,
+        iterations=5,
+        ls_iterations=10,
+        ccd_iterations=6,
         # multi-point mesh contacts need GBs on GPU; MuJoCo on CPU has them off too
         disableflags=("multiccd",),
       ),
@@ -176,7 +176,7 @@ MicrobanClimbRlCfg = RslRlOnPolicyRunnerCfg(
   ),
   logger="tensorboard",
   experiment_name="microban_climb",
-  save_interval=200,
+  save_interval=25,
   num_steps_per_env=24,
   max_iterations=10_000,
 )

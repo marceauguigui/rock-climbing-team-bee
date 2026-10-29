@@ -1,75 +1,49 @@
 # Copyright 2026 Marc Duclusaud
-
 # Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at:
-
-#     http://www.apache.org/licenses/LICENSE-2.0
 
 """Microban velocity environment"""
 
-import numpy as np
 from copy import deepcopy
+import numpy as np
 
 from mjlab.envs import ManagerBasedRlEnvCfg
+from mjlab.envs.mdp import dr
 from mjlab.envs.mdp.actions import JointPositionActionCfg
+from mjlab.envs.mdp.terminations import root_height_below_minimum
+from mjlab.managers.curriculum_manager import CurriculumTermCfg
+from mjlab.managers.event_manager import EventTermCfg
+from mjlab.managers.observation_manager import ObservationTermCfg
+from mjlab.managers.reward_manager import RewardTermCfg
 from mjlab.managers.scene_entity_config import SceneEntityCfg
-from mjlab.sensor import ContactMatch, ContactSensorCfg
-
-from mjlab_microban.robot.microban_constants import MICROBAN_ROBOT_CFG
+from mjlab.managers.termination_manager import TerminationTermCfg
 from mjlab.rl import (
     RslRlModelCfg,
     RslRlOnPolicyRunnerCfg,
     RslRlPpoAlgorithmCfg,
 )
-from mjlab.utils.noise import UniformNoiseCfg as Unoise
-
-from mjlab.managers.event_manager import EventTermCfg
-from mjlab.managers.reward_manager import RewardTermCfg
-from mjlab.managers.observation_manager import ObservationTermCfg
-from mjlab.managers.curriculum_manager import CurriculumTermCfg
-from mjlab.envs.mdp import dr
-
-from mjlab.envs.manager_based_rl_env import ManagerBasedRlEnv
-
+from mjlab.scene import SceneCfg
+from mjlab.sensor import (
+    ContactMatch,
+    ContactSensorCfg,
+    ObjRef,
+    RingPatternCfg,
+    TerrainHeightSensorCfg,
+)
+from mjlab.sim import MujocoCfg, SimulationCfg
 from mjlab.tasks.velocity import mdp
 from mjlab.tasks.velocity.velocity_env_cfg import make_velocity_env_cfg
-
-from mjlab.managers.reward_manager import RewardTermCfg
-from mjlab.managers.observation_manager import ObservationTermCfg
-from mjlab.managers.curriculum_manager import CurriculumTermCfg
-from mjlab.managers.event_manager import EventTermCfg
-from mjlab.managers.termination_manager import TerminationTermCfg
-
-from mjlab.envs.mdp import dr
-from mjlab.envs.mdp.terminations import root_height_below_minimum
-
-from mjlab.utils.noise import UniformNoiseCfg as Unoise
-from mjlab.scene import SceneCfg
 from mjlab.terrains import TerrainEntityCfg
-from mjlab.sim import MujocoCfg, SimulationCfg
+from mjlab.utils.noise import UniformNoiseCfg as Unoise
 from mjlab.viewer import ViewerConfig
-from mjlab.managers.scene_entity_config import SceneEntityCfg
-from mjlab.rl import (
-    RslRlModelCfg,
-    RslRlOnPolicyRunnerCfg,
-    RslRlPpoAlgorithmCfg,
-)
-from mjlab.envs.mdp.actions import JointPositionActionCfg
-from mjlab.sensor import ContactMatch, ContactSensorCfg, ObjRef, TerrainHeightSensorCfg, RingPatternCfg
 
-from mjlab_microban.tasks.mdp import (
-    reward_based_staged_curriculum,
-    reward_based_curriculum,
-    step_based_staged_curriculum,
+from mjlab_microban.robot.microban_constants import MICROBAN_ROBOT_CFG
+from mjlab_microban.src.mjlab_microban.tasks.velocity.mdp import (
+    UniformVelocityCommandWithRotation,
+    feet_distance_penalty,
+    no_stepping_penalty,
     set_command_velocity,
     set_stepping_parameters,
-    set_push_parameters,
-    no_stepping_penalty,
-    feet_distance_penalty,
-    penalize_stepping_while_standing,
-    stepping_curriculum,
-    UniformVelocityCommandWithRotation,
+    step_based_staged_curriculum,
     upright as local_upright,
 )
 
@@ -100,9 +74,8 @@ SIM_CFG = SimulationCfg(
         ls_iterations=20,
         ccd_iterations=100,
     ),
-    # nconmax=256,
-    # njmax=1024,
 )
+
 
 def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     cfg = make_velocity_env_cfg()
@@ -113,7 +86,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
 
     foot_site_names = ["left_foot", "right_foot"]
 
-    #---------------------------- Sensors ---------------------------
+    # ---------------------------- Sensors ---------------------------
     feet_ground_sensor_cfg = ContactSensorCfg(
         name="feet_ground_contact",
         primary=ContactMatch(
@@ -147,18 +120,14 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
         reduce="none",
         num_slots=1,
     )
-    
+
     cfg.scene.sensors = (
         feet_ground_sensor_cfg,
         foot_height_scan_cfg,
         self_collision_sensor_cfg,
     )
 
-    #---------------------------- Terrain ---------------------------
-    cfg.scene.terrain.terrain_type = "plane"
-    cfg.scene.terrain.terrain_generator = None
-
-    #---------------------------- Actions ---------------------------
+    # ---------------------------- Actions ---------------------------
     dofs_filter = r".*(?<!head)$"
 
     joint_pos_action = cfg.actions["joint_pos"]
@@ -166,7 +135,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     joint_pos_action.scale = 1.0
     cfg.actions["joint_pos"].actuator_names = (dofs_filter,)
 
-    #---------------------------- Observations ----------------------
+    # ---------------------------- Observations ----------------------
     del cfg.observations["actor"].terms["base_lin_vel"]
     del cfg.observations["actor"].terms["height_scan"]
     del cfg.observations["critic"].terms["height_scan"]
@@ -174,7 +143,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     cfg.observations["actor"].terms["joint_pos"] = ObservationTermCfg(
         func=mdp.joint_pos_rel,
         params={"asset_cfg": SceneEntityCfg("robot", joint_names=(dofs_filter,))},
-        noise=Unoise(n_min=-0.001, n_max=0.001),    
+        noise=Unoise(n_min=-0.001, n_max=0.001),
         delay_min_lag=0,
         delay_max_lag=0,
     )
@@ -187,12 +156,19 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
         delay_max_lag=1,
     )
 
-    # Observation delays/noises to simulate IMU sensor readings (only for actor, not critic)
-    cfg.observations["actor"].terms["projected_gravity"] = deepcopy(cfg.observations["actor"].terms["projected_gravity"])
-    cfg.observations["actor"].terms["projected_gravity"].noise = Unoise(n_min=-0.01, n_max=0.01)
+    cfg.observations["actor"].terms["projected_gravity"] = deepcopy(
+        cfg.observations["actor"].terms["projected_gravity"]
+    )
+    cfg.observations["actor"].terms["projected_gravity"].noise = Unoise(
+        n_min=-0.01, n_max=0.01
+    )
 
-    cfg.observations["actor"].terms["base_ang_vel"] = deepcopy(cfg.observations["actor"].terms["base_ang_vel"])
-    cfg.observations["actor"].terms["base_ang_vel"].noise = Unoise(n_min=-0.03, n_max=0.03)
+    cfg.observations["actor"].terms["base_ang_vel"] = deepcopy(
+        cfg.observations["actor"].terms["base_ang_vel"]
+    )
+    cfg.observations["actor"].terms["base_ang_vel"].noise = Unoise(
+        n_min=-0.03, n_max=0.03
+    )
 
     cfg.observations["actor"].terms["base_ang_vel"].delay_min_lag = 0
     cfg.observations["actor"].terms["base_ang_vel"].delay_max_lag = 3
@@ -201,7 +177,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     cfg.observations["actor"].terms["projected_gravity"].delay_max_lag = 3
     cfg.observations["actor"].terms["projected_gravity"].delay_update_period = 64
 
-    #---------------------------- Rewards ---------------------------
+    # ---------------------------- Rewards ---------------------------
     cfg.rewards["track_linear_velocity"].params["std"] = np.sqrt(0.1)
     cfg.rewards["track_linear_velocity"].weight = 2.0
 
@@ -247,7 +223,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     cfg.rewards["upright"].params["pitch"] = np.deg2rad(10.0)
     cfg.rewards["upright"].params["std"] = np.sqrt(0.1)
     cfg.rewards["upright"].weight = 1.0
-    
+
     cfg.rewards["body_ang_vel"].params["asset_cfg"].body_names = ("trunk",)
     cfg.rewards["body_ang_vel"].weight = -0.05
 
@@ -290,7 +266,6 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
         params={"sensor_name": self_collision_sensor_cfg.name},
     )
 
-    # Foot-site separation is 0.072 m when standing straight
     cfg.rewards["feet_distance"] = RewardTermCfg(
         func=feet_distance_penalty,
         weight=-1000.0,
@@ -300,7 +275,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
         },
     )
 
-    #---------------------------- Commands --------------------------
+    # ---------------------------- Commands --------------------------
     command = cfg.commands["twist"]
     command.build = lambda env, _cmd=command: UniformVelocityCommandWithRotation(_cmd, env)
     command.viz.z_offset = 0.5
@@ -316,7 +291,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
     command.rotation_env_ang_vel_range = (-1.5, 1.5)
     command.rotation_min_ang_vel = 0.5
 
-    #---------------------------- Events ----------------------------
+    # ---------------------------- Events ----------------------------
     cfg.events["reset_base"].params["pose_range"]["z"] = (0.0, 0.01)
 
     cfg.events["push_robot"].params["velocity_range"] = {
@@ -356,7 +331,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
         },
     )
 
-    #---------------------------- Curriculum ------------------------
+    # ---------------------------- Curriculum ------------------------
     cfg.curriculum = {}
 
     cfg.curriculum["staged_curriculum"] = CurriculumTermCfg(
@@ -386,16 +361,16 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
         },
     )
 
-    #---------------------------- Terminations ----------------------
+    # ---------------------------- Terminations ----------------------
     cfg.terminations["fell_over"] = TerminationTermCfg(
         func=root_height_below_minimum,
         params={"minimum_height": 0.10},
     )
 
-    #---------------------------- Play mode -------------------------
+    # ---------------------------- Play mode -------------------------
     if play:
         cfg.curriculum = {}
-        
+
         cfg.commands["twist"].rel_standing_envs = 0.0
         cfg.commands["twist"].rel_rotation_envs = 0.0
 
@@ -404,55 +379,7 @@ def make_microban_velocity_env_cfg(play: bool = False) -> ManagerBasedRlEnvCfg:
             "y": (0.0, 0.0),
         }
 
-        # cfg.commands["twist"].ranges.lin_vel_x = (0.5, 0.5)
-        # cfg.commands["twist"].ranges.lin_vel_y = (0.0, 0.0)
-        # cfg.commands["twist"].ranges.ang_vel_z = (0.0, 0.0)
-        # cfg.commands["twist"].rotation_env_ang_vel_range = (1.0, 1.0)
-
-        # cfg.commands["twist"].ranges.lin_vel_x = (-0.7, 0.7)
-        # cfg.commands["twist"].ranges.lin_vel_y = (-0.3, 0.3)
-        # cfg.commands["twist"].ranges.ang_vel_z = (-1.5, 1.5)
-        # cfg.commands["twist"].rotation_env_ang_vel_range = (-3.0, 3.0)
-
-        # Can be used to edit neutral pose with a zero agent
-        # cfg.events["reset_base"].params["pose_range"]["x"] = (0.0, 0.0)
-        # cfg.events["reset_base"].params["pose_range"]["y"] = (0.0, 0.0)
-        # cfg.events["reset_base"].params["pose_range"]["z"] = (0.3, 0.3)
-        # cfg.events["reset_base"].params["pose_range"]["yaw"] = (0.0, 0.0)
-        # cfg.events["reset_base"].interval_range_s = (0.0, 0.0)
-        # cfg.events["reset_base"].mode = "interval"
-
-        # del cfg.rewards["track_linear_velocity"]
-        # del cfg.rewards["track_angular_velocity"]
-        # del cfg.rewards["pose"]
-        # del cfg.rewards["upright"]
-        # cfg.terminations = {}
-
         cfg.observations["actor"].enable_corruption = False
-
-        # Can be used to print something every step
-        def debug(env: ManagerBasedRlEnv, _):
-            env.observation_manager.compute_group("actor", update_history=True)
-
-            terms = dict(env.observation_manager.get_active_iterable_terms(env_idx=0))
-
-            base_ang_vel = terms["actor-base_ang_vel"]
-            projected_gravity = terms["actor-projected_gravity"]
-
-            print("\n")
-            print(f"base_ang_vel: ")
-            print(f"x: {base_ang_vel[0]:.3f}")
-            print(f"y: {base_ang_vel[1]:.3f}")
-            print(f"z: {base_ang_vel[2]:.3f}")
-            print("\n")
-            print(f"projected_gravity: ")
-            print(f"x: {projected_gravity[0]:.3f}")
-            print(f"y: {projected_gravity[1]:.3f}")
-            print(f"z: {projected_gravity[2]:.3f}")
-
-        # cfg.events["debug"] = EventTermCfg(
-        #     func=debug, mode="interval", interval_range_s=(0.0, 0.0)
-        # )
 
     return cfg
 
@@ -489,7 +416,7 @@ MicrobanVelocityRlCfg = RslRlOnPolicyRunnerCfg(
     ),
     wandb_project="mjlab_microban_velocity",
     experiment_name="mjlab_microban_velocity",
-    save_interval=500,
+    save_interval=50,
     num_steps_per_env=24,
     max_iterations=15_000,
 )
