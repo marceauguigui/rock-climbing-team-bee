@@ -1,0 +1,15 @@
+<default>
+    <default class="xml330_actuator">
+        <joint damping="0.041" frictionloss="0.013" armature="0.0018"/>
+        <position kp="0.277" kv="0.0" forcerange="-0.77 0.77"/>
+    </default>
+</default>
+<sensor>
+    <framequat name="orientation" objtype="site" noise="0.001" objname="imu"/>
+    <gyro name="angular-velocity" site="imu" noise="0.005"/>
+
+    <gyro name="imu_ang_vel" site="imu"/>
+    <velocimeter name="imu_lin_vel" site="imu"/>
+    <accelerometer name="imu_accel" site="imu"/>
+    <subtreeangmom name="root_angmom" body="trunk"/>
+</sensor>
