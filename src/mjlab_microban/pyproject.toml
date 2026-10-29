@@ -36,5 +36,5 @@ override-dependencies = [
 
 [tool.uv.sources]
 better-actuator-models = { git = "https://github.com/Rhoban/bam.git", rev = "e9a619d56da5236206f4de6ceec2c1ee1b497b5c" }
-microban = { path = "../microban", editable = true }
-climbing-sim = { path = "../simulator", editable = true }
+microban = { workspace = true }
+climbing-sim = { workspace = true }

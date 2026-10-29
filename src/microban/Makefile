@@ -119,7 +119,7 @@ discover-robots:
 # Live dashboard on this PC (motors, IMU, 3D, reboot a motor): the robot streams while its program runs (service or
 # `make run`). HOST: the robot to open with; another one can be chosen, and saved under a name, in the page.
 # The robot says its version, Classic or Climber: the page shows its model (and changes it, in its header menu).
-MODELS ?=
+MODELS ?= --model Climber=/home/noar/rock-climbing-team-bee/src/microban_model/src/microban_model/urdf/robot_climb.urdf
 MODELS_CMD = uv run -q --group dashboard python -c "import microban_model as m; print(f'--model Classic={m.mjcf()} --model Climber={m.mjcf(True)}')"
 # the page's Deploy button runs make deploy for the robot shown, as this user (the SD image's: radxa)
 ROBOT_USER ?= radxa

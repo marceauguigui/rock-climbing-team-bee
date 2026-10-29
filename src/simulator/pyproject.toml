@@ -30,5 +30,5 @@ include = ["climbing_sim*"]
 climbing_sim = ["assets/**/*", "walls/*.json", "tools/web/*.html"]
 
 [tool.uv.sources]
-microban-model = { git = "https://github.com/Rhoban/microban_model", lfs = true }
+microban-model = { workspace = true }
 microban-sim = { git = "https://github.com/Rhoban/microban_sim" }

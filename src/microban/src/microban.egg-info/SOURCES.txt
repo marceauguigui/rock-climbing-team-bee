@@ -9,6 +9,7 @@ src/imu_reader.py
 src/main.py
 src/move_output.py
 src/observer.py
+src/placo.py
 src/robot_controller.py
 src/scheduler.py
 src/stop.py
@@ -33,6 +34,7 @@ src/moves/discover.py
 src/moves/head.py
 src/moves/look.py
 src/moves/move.py
+src/moves/pose.py
 src/moves/squat.py
 src/moves/walk.py
 src/sim/__init__.py
