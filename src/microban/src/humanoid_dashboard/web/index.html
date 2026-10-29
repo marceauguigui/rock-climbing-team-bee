@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Robot dashboard</title>
+<style>
+  :root { --bg: #f3f3f0; --panel: #fff; --ink: #1d2126; --muted: #6b7078; --line: #e1e1db; --accent: #d9622b;
+          --accent-soft: #fbe5d8; --ok: #2e8b57; --ok-soft: #e0f1e7; --warn: #c27a12; --warn-soft: #fbefd9;
+          --bad: #c63b2f; --bad-soft: #f8dedb; --grid: #e7e7e2; --scene: #eceae5; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #15171a; --panel: #1d2024; --ink: #e8e9eb; --muted: #9aa0a8; --line: #30343a; --accent: #f07a3e;
+            --accent-soft: #3a2619; --ok: #4cc286; --ok-soft: #1b3127; --warn: #e5a23a; --warn-soft: #3a2e17;
+            --bad: #f0675b; --bad-soft: #3b1f1c; --grid: #2a2d32; --scene: #1a1c1f; }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body { margin: 0; font: 13px/1.4 system-ui, sans-serif; background: var(--bg); color: var(--ink); display: flex; flex-direction: column; }
+  header { display: flex; align-items: center; gap: 14px; padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  h1 { font-size: 15px; margin: 0; }
+  .pill { padding: 3px 10px; border-radius: 99px; background: var(--bad-soft); color: var(--bad); font-weight: 600; font-size: 12px; }
+  .pill.ok { background: var(--ok-soft); color: var(--ok); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); }
+  .chips { display: flex; gap: 8px; flex-wrap: wrap; color: var(--muted); }
+  .chips b { color: var(--ink); font-weight: 600; }
+  .spacer { flex: 1; }
+  button { font: inherit; padding: 5px 11px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); color: var(--ink); cursor: pointer; }
+  button:hover { border-color: var(--accent); }
+  button.rec.on { background: var(--bad); border-color: var(--bad); color: #fff; }
+  button.danger { border-color: var(--bad); color: var(--bad); }
+  button.confirm { background: var(--bad); border-color: var(--bad); color: #fff; }
+  button:disabled { opacity: .55; cursor: default; }
+  button.small { padding: 2px 8px; font-size: 12px; }
+  button.stop { background: var(--bad); border-color: var(--bad); color: #fff; font-weight: 700; }
+  button.stop:hover { filter: brightness(1.1); }
+
+  main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(0, 1fr) 640px; grid-template-rows: minmax(0, 1fr) 230px; gap: 10px; padding: 10px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; min-height: 0; overflow: hidden; display: flex; flex-direction: column; }
+  .card h2 { white-space: nowrap; overflow: hidden; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0; padding: 8px 12px; border-bottom: 1px solid var(--line); display: flex; gap: 10px; align-items: center; }
+  #view { grid-row: 1; grid-column: 1; position: relative; }
+  #view canvas { display: block; width: 100%; height: 100%; }
+  #overlay { position: absolute; left: 10px; top: 8px; color: var(--muted); font-size: 12px; pointer-events: none; }
+  #right { grid-row: 1 / span 2; grid-column: 2; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
+  #motors { flex: 1; min-height: 0; }
+  #moves { flex: none; display: none; }
+  #moves.show { display: flex; }
+  #movelist { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 10px; max-height: 150px; overflow: auto; }
+  .mv { display: flex; align-items: center; gap: 6px; padding: 3px 4px 3px 10px; border: 1.5px solid var(--line);
+        border-radius: 999px; background: var(--panel); }
+  .mv.on { border-color: var(--ok); background: var(--ok-soft); }
+  .mv.busy { border-color: var(--warn); background: var(--warn-soft); }
+  .mv b { font-weight: 600; } .mv small { color: var(--muted); }
+  .mv.switch { border-style: dashed; }
+  /* the moves' live controls: their sliders, and the keyboard zone (the keys go to the robot while it has the focus) */
+  #controls { display: none; flex-direction: column; gap: 6px; padding: 0 10px 8px; }
+  #controls.show { display: flex; }
+  .slrow { display: grid; grid-template-columns: minmax(90px, 30%) minmax(0, 1fr) 56px; gap: 8px; align-items: center; font-size: 12px; }
+  .slrow span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .slrow small { color: var(--muted); }
+  .slrow input[type=range] { width: 100%; accent-color: var(--accent); margin: 0; }
+  .slval { width: 100%; box-sizing: border-box; font-family: inherit; font-size: 12px; font-weight: 600; font-variant-numeric: tabular-nums; text-align: right;
+           color: var(--ink); background: transparent; border: 1px solid transparent; border-radius: 5px; padding: 1px 3px;
+           cursor: text; -moz-appearance: textfield; }
+  .slval::-webkit-inner-spin-button, .slval::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .slval:hover { border-color: var(--line); }
+  .slval:focus { outline: none; border-color: var(--accent); background: var(--panel); }
+  #keyzone { display: none; border: 1.5px dashed var(--line); border-radius: 8px; padding: 7px 10px; font-size: 12px;
+             color: var(--muted); cursor: pointer; outline: none; }
+  #keyzone.show { display: block; }
+  #keyzone:focus { border-style: solid; border-color: var(--accent); background: var(--accent-soft); color: var(--ink); }
+  #keyzone kbd { font: 600 11px ui-monospace, monospace; border: 1px solid var(--line); border-radius: 4px; padding: 0 4px;
+                 background: var(--panel); color: var(--ink); }
+  #editor { position: fixed; right: 16px; top: 64px; width: min(420px, calc(100vw - 32px)); max-height: calc(100vh - 90px);
+            z-index: 10; display: none; box-shadow: 0 8px 30px rgba(0, 0, 0, .18); }
+  #editor.show { display: flex; }
+  #editor .head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  #editor .head b { font-size: 15px; } #editor .head .spacer { flex: 1; }
+  #eddoc { padding: 6px 12px 0; color: var(--muted); font-size: 12px; }
+  #edrows { overflow: auto; padding: 6px 12px 12px; }
+  .edrow { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--line); }
+  .edrow > div { flex: 1; display: flex; flex-direction: column; }
+  .edrow small { color: var(--muted); font-size: 12px; }
+  .edrow input[type=number] { width: 90px; font: inherit; padding: 3px 6px; border: 1px solid var(--line); border-radius: 6px;
+                              background: var(--panel); color: var(--ink); text-align: right; }
+  .scroll { overflow: auto; min-height: 0; flex: 1; }
+  table { border-collapse: collapse; width: 100%; font-variant-numeric: tabular-nums; }
+  th { position: sticky; top: 0; background: var(--panel); text-align: left; font-weight: 600; color: var(--muted); font-size: 11px; padding: 5px 6px; border-bottom: 1px solid var(--line); }
+  td { padding: 4px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  tr { cursor: pointer; }
+  tr.sel td { background: var(--accent-soft); }
+  tr.err td { background: var(--bad-soft); }
+  td.num { text-align: right; }
+  .bar { position: relative; width: 56px; height: 12px; background: var(--grid); border-radius: 3px; overflow: hidden; display: inline-block; vertical-align: middle; }
+  .bar i { position: absolute; left: 0; top: 0; bottom: 0; background: var(--ok); }
+  .bar i.warn { background: var(--warn); } .bar i.bad { background: var(--bad); }
+  .st { font-size: 12px; } .st.bad { color: var(--bad); font-weight: 600; } .st.warn { color: var(--warn); } .st.muted { color: var(--muted); }
+  .hot { color: var(--warn); font-weight: 600; } .vhot { color: var(--bad); font-weight: 600; }
+  #bottom { grid-row: 2; grid-column: 1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(0, 1.1fr); gap: 10px; min-height: 0; }
+  .plot { position: relative; flex: 1; min-height: 0; }
+  .plot canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .legend { font-weight: 400; text-transform: none; letter-spacing: 0; display: flex; gap: 8px; }
+  .legend span::before { content: ""; display: inline-block; width: 10px; height: 3px; margin-right: 4px; vertical-align: middle; background: var(--c); }
+  #events { font: 12px/1.45 ui-monospace, monospace; padding: 6px 10px; }
+  #events div.error { color: var(--bad); } #events div.warn { color: var(--warn); } #events div.ack { color: var(--ok); } #events div.nack { color: var(--bad); }
+  #events small { color: var(--muted); }
+  #empty { padding: 20px; color: var(--muted); }
+  .robotpick { position: relative; }
+  #rname { font-family: inherit !important; }
+  #robotbtn { font-family: ui-monospace, monospace; font-size: 12px; }
+  #robotbox { position: absolute; left: 0; top: calc(100% + 6px); z-index: 20; width: min(330px, calc(100vw - 32px)); padding: 10px 12px;
+              display: none; gap: 6px; flex-direction: column; box-shadow: 0 8px 30px rgba(0, 0, 0, .18); overflow: visible; }
+  #robotbox.show { display: flex; }
+  @media (max-width: 600px) { #robotbox { position: fixed; left: 16px; right: 16px; top: 56px; width: auto; } }
+  #robotbox label { font-weight: 600; } #robotbox small { color: var(--muted); }
+  #variantbox { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+  #variantbox[hidden] { display: none; }
+  #variantask { position: fixed; left: 50%; top: 56px; transform: translateX(-50%); z-index: 30; width: min(520px, calc(100vw - 32px));
+                box-sizing: border-box; padding: 12px 14px; display: flex; flex-direction: column; gap: 10px;
+                border: 1.5px solid var(--warn); box-shadow: 0 8px 30px rgba(0, 0, 0, .18); }
+  #variantask[hidden] { display: none; }
+  #variantask .row { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+  #variantgo { border-color: var(--warn); background: var(--warn-soft); color: var(--ink); font-weight: 600; }
+  #variant { font: inherit; font-size: 13px; font-weight: 600; color: var(--ink); padding: 3px 6px; border: 1px solid var(--line);
+             border-radius: 7px; background: var(--panel); }
+  #robotbox .row { display: flex; gap: 6px; }
+  #robotbox h3 { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+  #savedsec { display: flex; flex-direction: column; gap: 6px; padding-bottom: 10px; margin-bottom: 2px; border-bottom: 1px solid var(--line); }
+  #saved { display: flex; flex-direction: column; gap: 4px; }
+  #hostgo { align-self: flex-end; }
+  .saved { display: flex; align-items: center; gap: 6px; }
+  .saved > button:first-child { flex: 1; min-width: 0; text-align: left; display: flex; gap: 8px; align-items: baseline; overflow: hidden; }
+  .saved > button:first-child.cur { border-color: var(--accent); background: var(--accent-soft); }
+  .saved b { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .saved small { color: var(--muted); font-family: ui-monospace, monospace; white-space: nowrap; }
+  #host, #rname { flex: 1; min-width: 0; font: 13px ui-monospace, monospace; padding: 5px 8px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--ink); }
+  button#replay.on { background: var(--accent-soft); border-color: var(--accent); }
+  #replaybar { position: absolute; left: 8px; right: 8px; bottom: 8px; display: none; align-items: center; gap: 6px; flex-wrap: wrap;
+               padding: 6px 8px; background: var(--panel); border: 1px solid var(--line); border-radius: 9px; box-shadow: 0 4px 16px rgba(0, 0, 0, .12); }
+  #replaybar.show { display: flex; }
+  #replaybar select { font: inherit; padding: 4px 6px; border: 1px solid var(--line); border-radius: 7px; background: var(--panel); color: var(--ink); max-width: 100%; }
+  #replaybar #rp_file { flex: 0 1 260px; min-width: 0; }
+  #replaybar button { min-width: 34px; }
+  #rp_seek { flex: 1 1 160px; min-width: 120px; accent-color: var(--accent); }
+  #rp_time { color: var(--muted); font-variant-numeric: tabular-nums; font-size: 12px; white-space: nowrap; }
+  /* narrow window (half screen): one column, the page scrolls: 3D, plots and events, moves, every motor */
+  @media (max-width: 1100px) {
+    html, body { height: auto; }
+    main { flex: none; grid-template-columns: minmax(0, 1fr); grid-template-rows: 380px auto auto; }
+    #view { grid-row: 1; grid-column: 1; }
+    #bottom { grid-row: 2; grid-column: 1; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: 170px 170px; }
+    #right { grid-row: 3; grid-column: 1; min-height: auto; }
+    #motors { flex: none; }
+    #motors .scroll { overflow: visible; }
+    #movelist { max-height: none; }
+  }
+</style>
+<script type="importmap">{ "imports": { "three": "/static/vendor/three.module.js", "three/addons/": "/static/vendor/addons/" } }</script>
+</head>
+<body>
+<header>
+  <h1 id="title">Robot</h1>
+  <span class="pill" id="link">no robot</span>
+  <span class="robotpick"><button id="robotbtn" title="the robot to watch (host name or IP)">choose a robot ▾</button>
+    <form id="robotbox" class="card">
+      <div id="savedsec"><h3>Saved robots</h3><div id="saved"></div></div>
+      <h3>New robot</h3>
+      <label for="host">Address (host name or IP)</label>
+      <input id="host" placeholder="192.168.0.232" autocomplete="off" spellcheck="false">
+      <label for="rname">Name <small>(to save it for next time; empty: connect only)</small></label>
+      <input id="rname" placeholder="Microban Radxa" autocomplete="off" maxlength="40">
+      <button type="submit" id="hostgo">Connect</button>
+      <small>The robot's program sends to this PC while the page asks (UDP, port 7350).</small></form></span>
+  <label id="variantbox" hidden title="this robot's version, as the robot says (Classic: walking hands and feet, Climber: climbing forearms and feet): it runs only the moves made for it; changing it here changes it on the robot">robot version
+    <select id="variant"></select></label>
+  <div id="variantask" class="card" hidden role="alertdialog"><span id="variantmsg"></span>
+    <div class="row"><button id="variantno">Cancel</button><button id="variantgo"></button></div></div>
+  <div class="chips" id="scalars"></div>
+  <div class="spacer"></div>
+  <span id="robotcmds" class="chips"></span>
+  <button id="deploy" hidden title="send this folder's code to the robot and restart its program (as make deploy): the torque goes off a few seconds, hold the robot">⟳ Deploy code</button>
+  <button class="rec" id="rec">● Record</button>
+  <button id="replay" title="replay a recording (the live robot keeps running; em still acts on it)">▶ Replay</button>
+</header>
+<main>
+  <div class="card" id="view"><div id="overlay">drag: rotate · right-drag: pan · wheel: zoom · click a part: select its motor</div>
+    <div id="replaybar">
+      <select id="rp_file" title="recordings (--recordings folder)"></select>
+      <button id="rp_back" title="one frame back (←; shift: 1 s)">⏮</button>
+      <button id="rp_play" title="play / pause (space)">▶</button>
+      <button id="rp_fwd" title="one frame forward (→; shift: 1 s)">⏭</button>
+      <select id="rp_speed" title="speed"></select>
+      <input type="range" id="rp_seek" min="0" max="0" value="0">
+      <span id="rp_time"></span>
+      <button id="rp_live" title="back to the live robot">Live</button>
+    </div></div>
+  <div id="right">
+    <div class="card" id="moves"><h2>Moves <span class="legend">start / stop (as their keys)</span></h2><div id="movelist"></div>
+      <div id="controls"><div id="sliders"></div><div id="keyzone" tabindex="0"></div></div></div>
+    <div class="card" id="motors"><h2>Motors <span id="summary" class="legend"></span></h2><div class="scroll"><table id="table"></table><div id="empty">Waiting for the robot…</div></div></div>
+  </div>
+  <div id="bottom">
+    <div class="card"><h2>Current <span class="legend"><span style="--c:var(--accent)">total A</span></span></h2><div class="plot"><canvas id="p_cur"></canvas></div></div>
+    <div class="card"><h2 id="p_sel_title">Motor <span class="legend"><span style="--c:var(--accent)">angle</span><span style="--c:var(--muted)">target</span></span></h2><div class="plot"><canvas id="p_sel"></canvas></div></div>
+    <div class="card"><h2>Trunk <span class="legend"><span style="--c:var(--accent)">roll</span><span style="--c:#3d7fd9">pitch</span></span></h2><div class="plot"><canvas id="p_imu"></canvas></div></div>
+    <div class="card"><h2>Events</h2><div class="scroll" id="events"></div></div>
+  </div>
+</main>
+<div class="card" id="editor">
+  <div class="head"><b id="edtitle"></b><span class="badge">variables</span><span class="spacer"></span>
+    <button id="edsave" title="keep these values on the robot (move_options.json, loaded at start)">Save on robot</button>
+    <button id="edclose">Close</button></div>
+  <div id="eddoc"></div>
+  <div id="edrows"></div>
+</div>
+<script type="module" src="/static/app.js"></script>
+</body>
+</html>
