@@ -196,7 +196,7 @@ def create_occupation_matrix(image):
         i = int(np.argmin(np.abs(xs - cx)))
         j = int(np.argmin(np.abs(ys - cy)))
 
-        occupation[j, i] = 1
+        occupation[j-1, i-1] = 1
 
     print(f"Matrice {occupation.shape[0]} x {occupation.shape[1]}, "
           f"{occupation.sum()} blocs")
