@@ -2502,3 +2502,345 @@ WARNING Fri Oct 30 10:25:28 2026: Attaching a spec with an empty prefix may prev
 
 WARNING Fri Oct 30 10:25:28 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
 
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:41 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:01:49 2026: Pre-allocated visual geom buffer is full. Increase maxgeom above 100000.
+
+WARNING Fri Oct 30 11:01:50 2026: Pre-allocated visual geom buffer is full. Increase maxgeom above 100000.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:37 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:02:43 2026: Pre-allocated visual geom buffer is full. Increase maxgeom above 100000.
+
+WARNING Fri Oct 30 11:02:44 2026: Pre-allocated visual geom buffer is full. Increase maxgeom above 100000.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:52 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:17:57 2026: Pre-allocated visual geom buffer is full. Increase maxgeom above 100000.
+
+WARNING Fri Oct 30 11:17:58 2026: Pre-allocated visual geom buffer is full. Increase maxgeom above 100000.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:42 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:43 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:20:43 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+
+WARNING Fri Oct 30 11:36:19 2026: Attaching a spec with an empty prefix may prevent the model from being saved correctly.
+

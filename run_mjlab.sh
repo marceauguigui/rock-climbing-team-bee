@@ -21,13 +21,13 @@ case "$1" in
             exit 1
         fi
         
-        echo "🎮 Visualisation du modèle : $LATEST_PT"
-        uv run play Mjlab-Climb-Microban-Stage1 --checkpoint-file="$LATEST_PT"
+        echo "🎮 Visualisation du modèle : $LATEST_PT (1 seul environnement)"
+        uv run play Mjlab-Climb-Microban-Stage1 --checkpoint-file="$LATEST_PT" --num_envs 1
         ;;
     *)
         echo "Commandes disponibles :"
         echo "  ./run_mjlab.sh train   -> Lance un nouvel entraînement de zéro"
         echo "  ./run_mjlab.sh resume  -> Reprend l'entraînement existant (--agent.resume True)"
-        echo "  ./run_mjlab.sh play    -> Joue automatiquement le checkpoint le plus récent"
+        echo "  ./run_mjlab.sh play    -> Joue automatiquement le checkpoint le plus récent (1 robot)"
         ;;
 esac

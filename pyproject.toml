@@ -30,6 +30,7 @@ dependencies = [
     "microban",
     "climbing-sim",
     "mjlab-microban",
+    "meshcat>=0.3.2",
 ]
 
 [dependency-groups]

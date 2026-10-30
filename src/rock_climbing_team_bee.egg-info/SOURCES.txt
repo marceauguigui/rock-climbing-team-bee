@@ -47,6 +47,7 @@ src/mjlab_microban/src/mjlab_microban/robot/__init__.py
 src/mjlab_microban/src/mjlab_microban/robot/microban_constants.py
 src/mjlab_microban/src/mjlab_microban/robot/microban/make_wall_xml.py
 src/mjlab_microban/src/mjlab_microban/scripts/export_onnx.py
+src/mjlab_microban/src/mjlab_microban/tasks/__init__.py
 src/mjlab_microban/src/mjlab_microban/tasks/climb/__init__.py
 src/mjlab_microban/src/mjlab_microban/tasks/climb/climb_env_cfg.py
 src/mjlab_microban/src/mjlab_microban/tasks/climb/mdp.py

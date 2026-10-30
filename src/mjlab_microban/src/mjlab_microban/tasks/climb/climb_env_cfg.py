@@ -21,7 +21,12 @@ STAGES = {
       "fixed_target": True},
   2: {"levels": (1,), "single_transition": True},
   3: {"levels": (1, 2, 3)},
+  # Stage 4: climbing route. `chain` single-limb transitions in a row inside one episode: the active limb
+  # reaches its hold, then the next limb moves, and so on. The other three limbs must stay hooked.
+  4: {"levels": (1,), "chain": 8},
 }
+# a chain needs more time than a single transition
+EPISODE_S = {1: 30.0, 2: 30.0, 3: 30.0, 4: 60.0}
 
 from . import mdp
 from .scene_cfg import entities
@@ -72,7 +77,16 @@ def make_climb_env_cfg(stage: int = 1, play: bool = False) -> ManagerBasedRlEnvC
     "privileged": ObservationTermCfg(func=mdp.climb_privileged, params=CMD),
   }
 
+  if stage >= 4:
+    # which limb moves now, and what the stance after this one looks like
+    actor["active_limb"] = ObservationTermCfg(func=mdp.active_limb, params=CMD)
+    actor["next_stance"] = ObservationTermCfg(func=mdp.next_stance_target, params=CMD)
+    critic["active_limb"] = ObservationTermCfg(func=mdp.active_limb, params=CMD)
+    critic["next_stance"] = ObservationTermCfg(func=mdp.next_stance_target, params=CMD)
+
   rewards = {
+    # progress: gain in distance between the ACTIVE limb's ball and its target socket (the three other limbs
+    # are masked out). Must be re-anchored when the command moves to the next step (see StanceCommand).
     "progress": RewardTermCfg(func=mdp.progress, weight=50.0, params=CMD),
     "trunk_progress": RewardTermCfg(func=mdp.trunk_progress, weight=20.0, params=CMD),
     "hooked": RewardTermCfg(func=mdp.hooked_target, weight=2.0, params=CMD),
@@ -84,6 +98,11 @@ def make_climb_env_cfg(stage: int = 1, play: bool = False) -> ManagerBasedRlEnvC
       func=envs_mdp.joint_pos_limits, weight=-0.1, params={"asset_cfg": robot}
     ),
   }
+  if stage >= 4:
+    # one-shot bonus each time the active limb is hooked on its target (before the chain moves on)
+    rewards["step_success"] = RewardTermCfg(func=mdp.step_success, weight=10.0, params=CMD)
+    # penalty while a SUPPORT limb (not the active one) is unhooked: do not let go to move
+    rewards["support_lost"] = RewardTermCfg(func=mdp.support_lost, weight=-2.0, params=CMD)
 
   events = {
     "bam_init": EventTermCfg(mode="startup", func=bam_init),
@@ -144,7 +163,7 @@ def make_climb_env_cfg(stage: int = 1, play: bool = False) -> ManagerBasedRlEnvC
       ),
     ),
     decimation=10,  # 20 ms control step, as on the robot
-    episode_length_s=30.0,
+    episode_length_s=EPISODE_S[stage],
     scale_rewards_by_dt=False,
   )
   return cfg
