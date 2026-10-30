@@ -1,1 +1,3 @@
-uv run play Mjlab-Climb-Microban-Stage1 --checkpoint-file=$(find logs/ -name "*.pt" -exec ls -t {} + | head -n 1)
+./run_mjlab.sh train
+./run_mjlab.sh resume
+./run_mjlab.sh play

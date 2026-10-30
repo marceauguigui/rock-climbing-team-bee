@@ -104,7 +104,7 @@ def make_climb_env_cfg(stage: int = 1, play: bool = False) -> ManagerBasedRlEnvC
   }
 
   cfg = ManagerBasedRlEnvCfg(
-    scene=SceneCfg(terrain=None, entities=entities(), num_envs=1, extent=2.0),
+    scene=SceneCfg(terrain=None, entities=entities(), num_envs=1024, extent=2.0),
     observations={
       "actor": ObservationGroupCfg(terms=actor, concatenate_terms=True,
                                    enable_corruption=not play),
