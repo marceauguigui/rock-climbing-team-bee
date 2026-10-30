@@ -44,6 +44,20 @@ def _contact_state(sim):
     )
 
 
+def _configured_start_contacts(sim):
+    indices = {
+        (int(hold.col), int(hold.row)): index
+        for index, hold in enumerate(sim.wall.holds)
+    }
+    start = getattr(sim.wall, "start", {})
+    if set(start) != set(LIMBS):
+        return {limb: None for limb in LIMBS}
+    return {
+        limb: indices.get((int(start[limb].col), int(start[limb].row)))
+        for limb in LIMBS
+    }
+
+
 def _search_state(sim):
     trunk_pos, trunk_quat = sim.trunk_pose()
     quat = np.asarray(trunk_quat, dtype=float)
@@ -353,7 +367,7 @@ def plan_theoretical_to_top(
 
     top_row = max(int(hold.row) for hold in holds)
     top_indices = {i for i, hold in enumerate(holds) if hold.row == top_row}
-    contacts = {limb: _source_hold(sim, limb) for limb in LIMBS}
+    contacts = _configured_start_contacts(sim)
     missing = [
         limb for limb, index in contacts.items()
         if index is None or np.linalg.norm(
@@ -496,20 +510,6 @@ def plan_theoretical_to_top(
                     > limb_reach[limb] + 0.001
                 ):
                     failure_reasons["outside_limb_reach_bound"] += 1
-                    continue
-                solved = solve({limb: target}, state)
-                if solved is None:
-                    continue
-                q, error, margin = solved
-                predicted_balls = sim.ball_positions_at(
-                    q, state["trunk_pos"], state["trunk_quat"]
-                )
-                support_drift = max(
-                    float(np.linalg.norm(predicted_balls[member] - position))
-                    for member, position in supports.items()
-                )
-                if support_drift > 0.001:
-                    failure_reasons["theoretical_support_geometry_violation"] += 1
                     continue
                 trajectory, trajectory_error = _theoretical_transfer_path(
                     sim,
@@ -849,7 +849,12 @@ def plan_theoretical_to_top(
                 limit_reason or "no_ik_feasible_route"
             ),
             "planning_mode": "theoretical",
-            "planner_version": "0.2.0",
+            "planner_version": "0.3.0",
+            "theoretical_validation_status": (
+                "THEORETICAL_VALIDATED" if success
+                else "NOT_COMPLETED" if limit_reason
+                else "THEORETICAL_REJECTED"
+            ),
             "physical_validation_status": "NOT_TESTED",
             "search_parameters": {
                 "max_moves": max_moves,
@@ -883,7 +888,11 @@ def plan_theoretical_to_top(
             "nodes_explored": nodes,
             "failure_reasons": dict(failure_reasons),
             "elapsed_s": time.monotonic() - started,
-            "theoretical_model": "IK endpoint geometry and joint limits; no collision or dynamics validation",
+            "theoretical_model": (
+                "Four-phase waypoint IK, joint limits, and geometric support "
+                "position checks; collision distances, centre-of-mass stability, "
+                "static equilibrium, and dynamics are not validated"
+            ),
         }
     finally:
         sim.set_state(initial_state)

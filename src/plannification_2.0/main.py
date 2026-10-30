@@ -6,9 +6,11 @@ import json
 from pathlib import Path
 
 from climbing_sim import ClimbingSim, LIMBS
+from climbing_sim.wall import bundled_walls
 
 if __package__:
     from .contact_planner import (
+        _configured_start_contacts,
         _run_reposition,
         plan_theoretical_to_top,
         plan_to_top,
@@ -19,7 +21,12 @@ if __package__:
         validate_plan,
     )
 else:
-    from contact_planner import _run_reposition, plan_theoretical_to_top, plan_to_top
+    from contact_planner import (
+        _configured_start_contacts,
+        _run_reposition,
+        plan_theoretical_to_top,
+        plan_to_top,
+    )
     from validate_plan import (
         TransferTrajectoryConfig,
         _source_hold,
@@ -109,6 +116,9 @@ def execute_plan(sim, plan):
             {"kind": "transfer", "move": action}
             for action in plan
         ]
+    trajectory_config = TransferTrajectoryConfig(
+        **plan.get("trajectory_config", {})
+    ) if isinstance(plan, dict) else TransferTrajectoryConfig()
 
     completed = []
     for index, action in enumerate(actions, start=1):
@@ -153,7 +163,9 @@ def execute_plan(sim, plan):
                 "reason": f"invalid_move:{index}",
                 "steps": completed,
             }
-        result = validate_plan(sim, [action], restore=False)
+        result = validate_plan(
+            sim, [action], restore=False, config=trajectory_config
+        )
         step = result["steps"][0] if result["steps"] else {}
         if not result["success"] or not step.get("target_contact", False):
             return {
@@ -432,9 +444,11 @@ def build_plan(
 ):
     """Plan a climb from the simulator's current hanging state without moving it."""
     wall_holds = extract_wall_holds(sim)
-    initial_supports = {
-        limb: _source_hold(sim, limb) for limb in LIMBS
-    }
+    initial_supports = (
+        _configured_start_contacts(sim)
+        if planning_mode == "theoretical"
+        else {limb: _source_hold(sim, limb) for limb in LIMBS}
+    )
     if planning_mode == "theoretical":
         search = plan_theoretical_to_top(
             sim, max_moves=max_moves, max_branches=max_branches,
@@ -462,6 +476,53 @@ def build_plan(
         "holds": wall_holds,
     })
     return search
+
+
+def plan_all_walls(max_moves, max_branches, time_limit_s):
+    """Search and checkpoint a theoretical route for every bundled wall."""
+    planner_dir = Path(__file__).parent
+    results = []
+    summary = {
+        "planning_mode": "theoretical",
+        "physical_validation_status": "NOT_TESTED",
+        "walls": results,
+    }
+    summary_path = planner_dir / "theoretical-plans-summary.json"
+    for wall_name in bundled_walls():
+        sim = ClimbingSim(wall_name, cameras=[])
+        try:
+            sim.reset_hanging(settle_s=0)
+            result = build_plan(
+                sim,
+                max_moves=max_moves,
+                max_branches=max_branches,
+                time_limit_s=time_limit_s,
+                planning_mode="theoretical",
+            )
+            plan_path = planner_dir / f"{wall_name.lower()}-theoretical-plan.json"
+            save_plan(plan_path, result)
+            print_result(result)
+            results.append({
+                "wall": wall_name,
+                "status": result.get("status"),
+                "theoretical_validation_status": result.get(
+                    "theoretical_validation_status", "NOT_COMPLETED"
+                ),
+                "success": result.get("success", False),
+                "reason": result.get("reason"),
+                "initial_row": result.get("initial_max_progress_row"),
+                "final_row": result.get("max_progress_row"),
+                "transfer_count": result.get("transfer_count", 0),
+                "reposition_count": result.get("reposition_count", 0),
+                "branches_explored": result.get("branches_explored", 0),
+                "nodes_explored": result.get("nodes_explored", 0),
+                "elapsed_s": result.get("elapsed_s", 0.0),
+                "plan_file": plan_path.name,
+            })
+            save_plan(summary_path, summary)
+        finally:
+            sim.close()
+    return summary
 
 
 def print_result(result):
@@ -545,8 +606,8 @@ def print_result(result):
                 print(f"   Motif : {action['physical_failure_reason']}")
         print(f"Transferts : {transfers} | Repositionnements : {repositions}")
         print(
-            "Limites : IK/limites articulaires uniquement; collisions, "
-            "trajectoires et dynamique non validées."
+            "Vérifications : IK par waypoint, limites articulaires et appuis "
+            "géométriques; collisions, stabilité statique et dynamique non validées."
         )
         print(f"Search time: {result.get('elapsed_s', 0.0):.2f}s")
         return
@@ -623,6 +684,20 @@ def main(argv=None):
         help="settling time after reset_hanging (seconds)",
     )
     args = parser.parse_args(argv)
+    if args.wall.lower() == "all":
+        if (
+            args.mode != "plan"
+            or args.planning_mode != "theoretical"
+            or args.load_plan_file is not None
+            or args.plan_file is not None
+        ):
+            parser.error(
+                "--wall all requires theoretical planning without a loaded plan "
+                "or --plan-file"
+            )
+        return plan_all_walls(
+            args.max_moves, args.max_branches, args.time_limit_s
+        )
     if args.mode == "validate" and args.load_plan_file is None:
         parser.error("--mode validate requires --load-plan-file")
     if args.planning_mode == "realistic" and args.load_plan_file is None:
@@ -636,7 +711,12 @@ def main(argv=None):
 
     sim = ClimbingSim(args.wall, cameras=[])
     try:
-        sim.reset_hanging(settle_s=args.settle_s)
+        settle_s = (
+            0.0
+            if args.mode == "plan" and args.planning_mode == "theoretical"
+            else args.settle_s
+        )
+        sim.reset_hanging(settle_s=settle_s)
         print(f"Initial supports: {sim.hooked()}")
         if args.load_plan_file:
             result = load_plan(args.load_plan_file)

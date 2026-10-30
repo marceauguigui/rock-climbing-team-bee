@@ -418,6 +418,10 @@ def _candidate_paths(
         config.approach_ticks_per_waypoint, config.max_waypoint_spacing_m,
     )
     _append_segment(
+        path, approach_point, target_standoff, "approach",
+        config.approach_ticks_per_waypoint, config.max_waypoint_spacing_m,
+    )
+    _append_segment(
         path, target_standoff, target, "insertion",
         config.insertion_ticks_per_waypoint,
         config.max_insertion_step_m,
@@ -443,12 +447,18 @@ def _theoretical_transfer_path(
     max_joint_step = 0.0
     min_joint_margin = float("inf")
     max_ik_error = 0.0
-    for waypoint_index, (point, phase, ticks) in enumerate(path, start=1):
+    waypoint_index = 0
+    previous_point = np.asarray(start, dtype=float)
+    min_refinement_spacing = max(
+        1e-6, config.max_waypoint_spacing_m / 8.0
+    )
+    while waypoint_index < len(path):
+        point, phase, ticks = path[waypoint_index]
         if deadline is not None and time.monotonic() >= deadline:
             return None, {
                 "reason": "time_limit_reached",
                 "phase": phase,
-                "waypoint_index": waypoint_index,
+                "waypoint_index": waypoint_index + 1,
             }
         targets = {name: position for name, position in supports.items()}
         targets[limb] = point
@@ -464,14 +474,20 @@ def _theoretical_transfer_path(
             return None, {
                 **invalid,
                 "phase": phase,
-                "waypoint_index": waypoint_index,
+                "waypoint_index": waypoint_index + 1,
             }
         joint_step = float(np.max(np.abs(q - seed)))
         if joint_step > config.max_joint_step_rad:
+            if np.linalg.norm(point - previous_point) > min_refinement_spacing:
+                path.insert(
+                    waypoint_index,
+                    ((previous_point + point) / 2.0, phase, ticks),
+                )
+                continue
             return None, {
                 "reason": "joint_path_discontinuity",
                 "phase": phase,
-                "waypoint_index": waypoint_index,
+                "waypoint_index": waypoint_index + 1,
                 "joint_waypoint_step_rad": joint_step,
                 "joint_waypoint_step_limit_rad": config.max_joint_step_rad,
             }
@@ -486,7 +502,7 @@ def _theoretical_transfer_path(
             return None, {
                 "reason": "theoretical_support_geometry_violation",
                 "phase": phase,
-                "waypoint_index": waypoint_index,
+                "waypoint_index": waypoint_index + 1,
                 "support_drift_m": support_drift,
             }
         margin = float(np.min(np.minimum(
@@ -502,6 +518,8 @@ def _theoretical_transfer_path(
             "joint_limit_margin_rad": margin,
         })
         seed = q
+        previous_point = point
+        waypoint_index += 1
         max_joint_step = max(max_joint_step, joint_step)
         min_joint_margin = min(min_joint_margin, margin)
         max_ik_error = max(max_ik_error, float(error))
