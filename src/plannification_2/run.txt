@@ -1,1 +1,1 @@
-uv run python -m plannification_2.main --wall N2 --mode plan --planning-mode theoretical --max-moves 128 --max-branches 300 --time-limit-s 300
+uv run python -m plannification_2.main --wall N1 --mode plan --planning-mode theoretical --max-moves 128 --max-branches 300 --time-limit-s 300

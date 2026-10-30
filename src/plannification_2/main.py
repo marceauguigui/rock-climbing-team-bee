@@ -660,7 +660,7 @@ def print_result(result):
 
 def main(argv=None):
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--wall", default="N2", help="competition wall: N1, N2, or N3")
+    parser.add_argument("--wall", default="N1", help="competition wall: N1, N2, or N3")
     parser.add_argument(
         "--mode", choices=("plan", "execute", "validate"), default="plan",
         help="plan, execute a physically validated plan, or validate a saved route",
