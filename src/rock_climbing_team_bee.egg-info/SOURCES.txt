@@ -1,5 +1,6 @@
 README.md
 pyproject.toml
+src/detection/detector.py
 src/microban/src/constants.py
 src/microban/src/controller.py
 src/microban/src/gamepad_daemon.py
@@ -12,7 +13,6 @@ src/microban/src/robot_controller.py
 src/microban/src/scheduler.py
 src/microban/src/stop.py
 src/microban/src/telemetry.py
-src/microban/src/test_placo.py
 src/microban/src/voltage.py
 src/microban/src/humanoid_dashboard/__init__.py
 src/microban/src/humanoid_dashboard/app.py
@@ -57,7 +57,6 @@ src/mjlab_microban/src/mjlab_microban/tasks/velocity/__init__.py
 src/mjlab_microban/src/mjlab_microban/tasks/velocity/mdp.py
 src/mjlab_microban/src/mjlab_microban/tasks/velocity/microban_velocity_env_cfg.py
 src/plannification/plannification.py
-src/preproc/preproc.py
 src/rock_climbing_team_bee.egg-info/PKG-INFO
 src/rock_climbing_team_bee.egg-info/SOURCES.txt
 src/rock_climbing_team_bee.egg-info/dependency_links.txt
