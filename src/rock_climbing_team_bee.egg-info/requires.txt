@@ -15,3 +15,4 @@ microban-sim
 microban
 climbing-sim
 mjlab-microban
+meshcat>=0.3.2

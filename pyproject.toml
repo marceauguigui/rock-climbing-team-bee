@@ -31,6 +31,7 @@ dependencies = [
     "climbing-sim",
     "mjlab-microban",
     "pyrealsense2>=2.59.1.11053",
+    "meshcat>=0.3.2",
 ]
 
 [dependency-groups]

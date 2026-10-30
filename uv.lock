@@ -2348,6 +2348,7 @@ source = { editable = "." }
 dependencies = [
     { name = "better-actuator-models" },
     { name = "climbing-sim" },
+    { name = "meshcat" },
     { name = "microban" },
     { name = "microban-model" },
     { name = "microban-sim" },
@@ -2380,6 +2381,7 @@ sim = [
 requires-dist = [
     { name = "better-actuator-models", git = "https://github.com/Rhoban/bam.git?rev=e9a619d56da5236206f4de6ceec2c1ee1b497b5c" },
     { name = "climbing-sim", editable = "src/simulator" },
+    { name = "meshcat", specifier = ">=0.3.2" },
     { name = "microban", editable = "src/microban" },
     { name = "microban-model", editable = "src/microban_model" },
     { name = "microban-sim", git = "https://github.com/Rhoban/microban_sim" },
