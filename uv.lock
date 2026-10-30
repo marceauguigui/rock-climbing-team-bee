@@ -2223,6 +2223,16 @@ wheels = [
 ]
 
 [[package]]
+name = "pyrealsense2"
+version = "2.59.1.11053"
+source = { registry = "https://pypi.org/simple" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/fc/aa/d740d01d8e244a837d2a7937592c2e506229f79f8664c2b9cd7f3ac2565a/pyrealsense2-2.59.1.11053-cp312-cp312-manylinux1_x86_64.whl", hash = "sha256:5da55a75e0af0fa4064e7496289a93a27af2aee0a650ca2b47756eda0c74d578", size = 13423985, upload-time = "2026-10-11T08:57:58.266Z" },
+    { url = "https://files.pythonhosted.org/packages/19/b4/66b1e773d48ea91657b0a8782fe3d9b156ac03b2b87bfc74b352007b6ce5/pyrealsense2-2.59.1.11053-cp312-cp312-manylinux2014_aarch64.whl", hash = "sha256:38310867ca6ba29aefcb313ad65aac7a6d8937f8c9f32d094c8345d904855811", size = 7094617, upload-time = "2026-10-11T08:58:06.608Z" },
+    { url = "https://files.pythonhosted.org/packages/cc/6f/1d71cb077c3565c27c9b891df877001474db99dafedec5957905c8024981/pyrealsense2-2.59.1.11053-cp312-cp312-win_amd64.whl", hash = "sha256:045dfae020a635ba0c2c27e79ea3fa844acb86101344f68ca4c4163beb94b721", size = 9356103, upload-time = "2026-10-11T08:58:14.347Z" },
+]
+
+[[package]]
 name = "python-dateutil"
 version = "3.0.0"
 source = { registry = "https://pypi.org/simple" }
@@ -2350,6 +2360,7 @@ dependencies = [
     { name = "pillow" },
     { name = "placo" },
     { name = "pollen-bmi088-imu-library" },
+    { name = "pyrealsense2" },
     { name = "rustypot" },
     { name = "scipy" },
     { name = "warp-lang" },
@@ -2381,6 +2392,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=10" },
     { name = "placo", specifier = ">=0.10.2" },
     { name = "pollen-bmi088-imu-library", specifier = "==1.0.0rc1" },
+    { name = "pyrealsense2", specifier = ">=2.59.1.11053" },
     { name = "rustypot", specifier = ">=1.13.1" },
     { name = "scipy", specifier = ">=1.18.1" },
     { name = "warp-lang", specifier = "==1.12.0" },
