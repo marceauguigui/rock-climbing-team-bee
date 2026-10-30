@@ -10,10 +10,10 @@ main
 move_output
 moves
 observer
-placo
 robot_controller
 scheduler
 sim
 stop
 telemetry
+test_placo
 voltage

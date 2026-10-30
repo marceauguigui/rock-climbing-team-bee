@@ -9,11 +9,11 @@ src/imu_reader.py
 src/main.py
 src/move_output.py
 src/observer.py
-src/placo.py
 src/robot_controller.py
 src/scheduler.py
 src/stop.py
 src/telemetry.py
+src/test_placo.py
 src/voltage.py
 src/humanoid_dashboard/__init__.py
 src/humanoid_dashboard/app.py

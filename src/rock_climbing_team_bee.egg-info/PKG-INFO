@@ -12,6 +12,7 @@ Requires-Dist: placo>=0.10.2
 Requires-Dist: mjlab==1.3.0
 Requires-Dist: warp-lang==1.12.0
 Requires-Dist: onnxruntime>=1.26.0
+Requires-Dist: scipy>=1.18.1
 Requires-Dist: pollen_bmi088_imu_library==1.0.0rc1
 Requires-Dist: rustypot>=1.13.1
 Requires-Dist: better-actuator-models
@@ -19,6 +20,7 @@ Requires-Dist: microban-model
 Requires-Dist: microban-sim
 Requires-Dist: microban
 Requires-Dist: climbing-sim
+Requires-Dist: mjlab-microban
 
 # rock-climbing-team-bee
 

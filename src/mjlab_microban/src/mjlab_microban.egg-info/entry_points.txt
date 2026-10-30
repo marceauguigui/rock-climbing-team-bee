@@ -1,0 +1,2 @@
+[mjlab.tasks]
+mjlab_microban = mjlab_microban.tasks

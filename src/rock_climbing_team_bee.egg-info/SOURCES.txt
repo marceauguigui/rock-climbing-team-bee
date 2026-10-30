@@ -8,11 +8,11 @@ src/microban/src/imu_reader.py
 src/microban/src/main.py
 src/microban/src/move_output.py
 src/microban/src/observer.py
-src/microban/src/placo.py
 src/microban/src/robot_controller.py
 src/microban/src/scheduler.py
 src/microban/src/stop.py
 src/microban/src/telemetry.py
+src/microban/src/test_placo.py
 src/microban/src/voltage.py
 src/microban/src/humanoid_dashboard/__init__.py
 src/microban/src/humanoid_dashboard/app.py
