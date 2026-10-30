@@ -3,6 +3,7 @@ climb.py: Climbing move using visual hold detection and Cartesian inverse kinema
 
 This move integrates the full pipeline:
 1. Detects holds on the wall image using `detection.detector.create_occupation_matrix`.
+   By default, loads `src/wall_picture/wallX.jpg`.
 2. Plans the climbing steps and generates 3D waypoints using `src/moves/moves.py`.
 3. Solves inverse kinematics at 50 Hz using Placo (CubicSpline3D) to command the 19 robot joints.
 """
@@ -21,6 +22,22 @@ _workspace_src = _workspace_root / "src"
 for p in [_workspace_src, _workspace_root]:
     if str(p) not in sys.path:
         sys.path.insert(0, str(p))
+
+# Default wall image path in src/wall_picture/wall2.jpg
+_candidate_images = [
+    _workspace_src / "wall_picture" / "wall2.jpg",
+    _workspace_root / "src" / "wall_picture" / "wall2.jpg",
+    _workspace_root / "wall_picture" / "wall2.jpg",
+    Path("src/wall_picture/wall2.jpg"),
+    Path("wall_picture/wall2.jpg"),
+]
+DEFAULT_IMAGE_PATH = ""
+for c in _candidate_images:
+    if c.exists():
+        DEFAULT_IMAGE_PATH = str(c.resolve())
+        break
+if not DEFAULT_IMAGE_PATH:
+    DEFAULT_IMAGE_PATH = str((_workspace_src / "wall_picture" / "wall2.jpg").resolve())
 
 # Load src/moves/moves.py
 _moves_path = _workspace_src / "moves" / "moves.py"
@@ -57,8 +74,8 @@ def plan_from_occupation_matrix(occupation: np.ndarray, max_steps: int = 4) -> l
     """
     Extract a sequence of starting holds and climb moves from an occupation matrix.
     occupation: 2D array (GRID_ROWS x GRID_COLS) with 1s at hold sockets.
+    Matrix convention: row y=0 is top of board, row y=92 is bottom of board.
     """
-    # Find all detected holds: (row_y, col_x) in OpenCV matrix convention
     coords = np.argwhere(occupation == 1)
     if len(coords) < 4:
         raise ValueError(f"Found only {len(coords)} holds in matrix, need at least 4.")
@@ -75,15 +92,19 @@ def plan_from_occupation_matrix(occupation: np.ndarray, max_steps: int = 4) -> l
     right_holds = [h for h in sorted_holds if h[0] >= mid_col]
 
     if len(left_holds) < 2 or len(right_holds) < 2:
-        # Fallback to simple split
         left_holds = sorted_holds[0::2]
         right_holds = sorted_holds[1::2]
 
-    # Starting 4 limbs: lowest 2 left and lowest 2 right
+    # Feet: lowest holds
     left_foot = left_holds[0]
     right_foot = right_holds[0]
-    left_hand = left_holds[1]
-    right_hand = right_holds[1]
+
+    # Hands: holds that are ~15 rows higher (row y <= foot_y - 15) for natural hanging posture
+    lh_cands = [h for h in left_holds if h[1] <= left_foot[1] - 12]
+    rh_cands = [h for h in right_holds if h[1] <= right_foot[1] - 12]
+
+    left_hand = lh_cands[0] if lh_cands else (left_holds[1] if len(left_holds) > 1 else left_holds[0])
+    right_hand = rh_cands[0] if rh_cands else (right_holds[1] if len(right_holds) > 1 else right_holds[0])
 
     plan: list[dict[str, Any]] = [
         {"limb": "left_foot", "target_coords": left_foot},
@@ -92,53 +113,56 @@ def plan_from_occupation_matrix(occupation: np.ndarray, max_steps: int = 4) -> l
         {"limb": "right_hand", "target_coords": right_hand},
     ]
 
-    # Generate subsequent climb steps with higher holds
-    l_idx = 2
-    r_idx = 2
+    # Higher holds above hand level to climb towards
+    hand_y = min(left_hand[1], right_hand[1])
+    higher_left = [h for h in left_holds if h[1] < hand_y]
+    higher_right = [h for h in right_holds if h[1] < hand_y]
+
+    l_idx = 0
+    r_idx = 0
     steps = 0
 
-    while steps < max_steps and (l_idx < len(left_holds) or r_idx < len(right_holds)):
-        # Alternate moving right and left limbs
-        if steps % 2 == 0 and r_idx < len(right_holds):
-            limb = "right_hand" if steps % 4 < 2 else "right_foot"
-            plan.append({"limb": limb, "target_coords": right_holds[r_idx]})
+    while steps < max_steps and (l_idx < len(higher_left) or r_idx < len(higher_right)):
+        if steps % 2 == 0 and r_idx < len(higher_right):
+            plan.append({"limb": "right_hand", "target_coords": higher_right[r_idx]})
             r_idx += 1
             steps += 1
-        elif l_idx < len(left_holds):
-            limb = "left_hand" if steps % 4 < 2 else "left_foot"
-            plan.append({"limb": limb, "target_coords": left_holds[l_idx]})
+        elif l_idx < len(higher_left):
+            plan.append({"limb": "left_hand", "target_coords": higher_left[l_idx]})
             l_idx += 1
             steps += 1
-        elif r_idx < len(right_holds):
-            limb = "right_hand"
-            plan.append({"limb": limb, "target_coords": right_holds[r_idx]})
+        elif r_idx < len(higher_right):
+            plan.append({"limb": "right_hand", "target_coords": higher_right[r_idx]})
             r_idx += 1
             steps += 1
         else:
             break
 
+    # If no holds were found above hands, pick any unused higher holds
+    if steps == 0:
+        unused_left = [h for h in left_holds if h not in (left_foot, left_hand)]
+        unused_right = [h for h in right_holds if h not in (right_foot, right_hand)]
+        for h in (unused_right + unused_left)[:max_steps]:
+            limb = "right_hand" if h[0] >= mid_col else "left_hand"
+            plan.append({"limb": limb, "target_coords": h})
+
     return plan
 
 
 def plan_from_wall(wall_name: str = "N2", max_steps: int = 4) -> list[dict[str, Any]]:
-    """
-    Fallback plan generated from a bundled simulator wall (e.g. N2).
-    """
+    """Fallback plan generated from a bundled simulator wall (e.g. N2)."""
     from climbing_sim import Wall
 
     wall = Wall.load(wall_name)
     plan: list[dict[str, Any]] = []
 
-    # Helper to convert Wall Hold(col, row) to matrix (x, y)
     def hold_to_matrix(h):
         return (int(h.col), int((GRID_ROWS - 1) - h.row))
 
-    # Add start holds
     for limb in ["left_foot", "right_foot", "left_hand", "right_hand"]:
         if limb in wall.start:
             plan.append({"limb": limb, "target_coords": hold_to_matrix(wall.start[limb])})
 
-    # Pick climbing holds above start holds
     start_holds_set = set(wall.start.values())
     higher_holds = [h for h in wall.holds if h not in start_holds_set]
     higher_holds.sort(key=lambda h: (h.row, h.col))
@@ -156,17 +180,18 @@ class ClimbMove:
 
     description = "Visual climbing via detector.py and Placo IK"
     kp = 125
+
+    # Note: the web dashboard inputs only support numbers and booleans (checkboxes).
+    # Strings cannot be typed in the dashboard input fields.
     options = {
-        "image_path": "board.jpg",
-        "wall_name": "N2",
+        "use_image": True,
         "step_duration": 1.5,
         "pause_duration": 0.3,
         "max_steps": 4,
         "auto_stop": False,
     }
     option_docs = {
-        "image_path": "Path to the wall photo (uses detector.py). If empty or not found, uses wall_name.",
-        "wall_name": "Bundled wall fallback when image is missing (e.g. N1, N2, N3).",
+        "use_image": "Checked = detect holds on src/wall_picture/wallX.jpg; Unchecked = fallback to simulated N2 wall.",
         "step_duration": "Duration of each limb movement in seconds.",
         "pause_duration": "Pause between successive limb movements in seconds.",
         "max_steps": "Maximum number of steps to climb.",
@@ -176,8 +201,11 @@ class ClimbMove:
         "speed": (0.2, 2.0, 1.0),
     }
 
-    def __init__(self) -> None:
+    def __init__(self, image_path: str = DEFAULT_IMAGE_PATH, wall_name: str = "N2") -> None:
+        self.image_path = image_path
+        self.wall_name = wall_name
         self.slider = {k: v[2] for k, v in self.sliders.items()}
+
         self._robot = placo.RobotWrapper(
             str(MJCF_DIR / "robot_climb.xml"),
             placo.Flags.mjcf + placo.Flags.ignore_collisions,
@@ -206,29 +234,28 @@ class ClimbMove:
         self._solver.enable_joint_limits(True)
 
     def _build_plan(self) -> list[dict[str, Any]]:
-        """Extract plan from image if available, otherwise from wall fallback."""
-        img_path = self.options.get("image_path", "")
+        """Extract plan from image if enabled, otherwise from wall fallback."""
         max_steps = int(self.options.get("max_steps", 4))
+        use_image = bool(self.options.get("use_image", True))
 
-        if img_path and os.path.exists(img_path):
+        if use_image and self.image_path and os.path.exists(self.image_path):
             try:
                 import cv2
                 from detection.detector import create_occupation_matrix
 
-                image = cv2.imread(img_path)
+                print(f"[ClimbMove] Processing wall photo from '{self.image_path}'...")
+                image = cv2.imread(self.image_path)
                 if image is not None:
-                    print(f"[ClimbMove] Processing wall image from '{img_path}'...")
                     occupation, _, _ = create_occupation_matrix(image, debug=False)
                     plan = plan_from_occupation_matrix(occupation, max_steps=max_steps)
-                    print(f"[ClimbMove] Extracted plan with {len(plan)} items from image.")
+                    print(f"[ClimbMove] Extracted plan with {len(plan)} items from wall photo.")
                     return plan
             except Exception as e:
-                print(f"[ClimbMove] Error extracting plan from image '{img_path}': {e}")
+                print(f"[ClimbMove] Error extracting plan from photo '{self.image_path}': {e}")
 
         # Fallback to bundled wall
-        wall_name = str(self.options.get("wall_name", "N2"))
-        print(f"[ClimbMove] Using fallback wall '{wall_name}'...")
-        return plan_from_wall(wall_name, max_steps=max_steps)
+        print(f"[ClimbMove] Using fallback wall '{self.wall_name}'...")
+        return plan_from_wall(self.wall_name, max_steps=max_steps)
 
     def start(self, obs: dict[str, Any]) -> None:
         """Called when the move starts."""
@@ -263,7 +290,6 @@ class ClimbMove:
         current_time = 0.5  # initial 0.5s settle time
 
         for move in self._moves_seq:
-            # Build Placo cubic spline for this move
             spline = placo.CubicSpline3D()
             waypoints = move["waypoints"]
             ratios = [0.15, 0.30, 0.60, 0.75, 0.90, 1.00]
@@ -322,10 +348,10 @@ class ClimbMove:
 if __name__ == "__main__":
     from climbing_sim import ClimbingSim, run_move
 
-    print("Running ClimbMove in simulation...")
+    print("Running ClimbMove with wall_picture/wall2.jpg by default...")
     sim = ClimbingSim("N2", cameras=[], kp_fw=125)
     sim.reset_hanging()
 
     move = ClimbMove()
     obs = run_move(move, sim, seconds=10.0)
-    print("ClimbMove finished simulation successfully!")
+    print("ClimbMove finished successfully!")

@@ -29,25 +29,21 @@ setup: sync
 # MOVES=path/to/file.py: the moves of a file kept outside src/moves/, for this session (make run, make sim)
 MOVES ?=
 # The robot's program on Rhoban's robot simulator (microban_sim): VARIANT=climber for the climbing robot on the
-# floor; WALL=N1|N2|N3|wall.json on the hackathon's climbing wall, its simulator cloned next to this folder (SIMULATOR,
-# used from there: a change made in it applies at once); START=floor: standing in front of the wall
+# floor; WALL=N1|N2|N3|wall.json on the hackathon's climbing wall; START=floor: standing in front of the wall
 VARIANT ?= classic
 WALL ?=
 START ?= hang
-SIMULATOR ?= ../simulator
 # MICROBAN_SIM=path/to/microban_sim: a clone of Rhoban's robot simulator instead of its release (to change it)
 MICROBAN_SIM ?=
 # PYTHON=mjpython on macOS (MuJoCo's viewer needs it)
 PYTHON ?= python
 sim:
-	@$(if $(WALL),test -f $(SIMULATOR)/pyproject.toml || { echo "The climbing simulator is not in $(SIMULATOR): \
-	git clone https://github.com/rock-climbing-robots/simulator $(SIMULATOR)  (or SIMULATOR=its/folder)"; exit 1; })
-	PYTHONPATH=src uv run --group sim $(if $(MICROBAN_SIM),--with-editable $(MICROBAN_SIM)) $(if $(WALL),--with-editable $(SIMULATOR)) \
+	PYTHONPATH=src:../../src uv run --group sim $(if $(MICROBAN_SIM),--with-editable $(MICROBAN_SIM)) \
 		$(PYTHON) src/sim/sim_main.py --hz 50 $(if $(WALL),,--variant $(VARIANT)) $(if $(MOVES),--moves $(MOVES)) \
 		$(if $(WALL),--wall $(WALL) --start $(START))
 
 viewer:
-	PYTHONPATH=src uv run src/sim/viewer_main.py --hz 25
+	PYTHONPATH=src:../../src uv run src/sim/viewer_main.py --hz 25
 
 run: sync
 	$(if $(MOVES),scp $(MOVES) $(HOST):microban/user_moves.py)
@@ -119,8 +115,8 @@ discover-robots:
 # Live dashboard on this PC (motors, IMU, 3D, reboot a motor): the robot streams while its program runs (service or
 # `make run`). HOST: the robot to open with; another one can be chosen, and saved under a name, in the page.
 # The robot says its version, Classic or Climber: the page shows its model (and changes it, in its header menu).
-MODELS ?= --model Climber=/home/noar/rock-climbing-team-bee/src/microban_model/src/microban_model/urdf/robot_climb.urdf
-MODELS_CMD = uv run -q --group dashboard python -c "import microban_model as m; print(f'--model Classic={m.mjcf()} --model Climber={m.mjcf(True)}')"
+MODELS ?=
+MODELS_CMD = uv run -q --group dashboard python -c "import microban_model as m; print(f'--model Climber={m.mjcf(True)} --model Classic={m.mjcf()}')"
 # the page's Deploy button runs make deploy for the robot shown, as this user (the SD image's: radxa)
 ROBOT_USER ?= radxa
 # only a HOST given (command line or environment), not the default one: else the page opens on its robot picker;
@@ -128,6 +124,6 @@ ROBOT_USER ?= radxa
 DASH_ROBOT = $(if $(filter command line environment,$(origin HOST)),--robot $(lastword $(subst @, ,$(HOST))))
 dashboard:
 	@echo "Starting the dashboard (the first time, uv installs its packages: about a minute)..."
-	PYTHONPATH=src uv run --group dashboard python -m humanoid_dashboard.app $(DASH_ROBOT) $(if $(MODELS),$(MODELS),$$($(MODELS_CMD))) \
+	PYTHONPATH=src:../../src uv run --group dashboard python -m humanoid_dashboard.app $(DASH_ROBOT) $(if $(MODELS),$(MODELS),$$($(MODELS_CMD))) \
 		--title Microban \
 		--deploy 'make deploy HOST=$(ROBOT_USER)@{host}'
