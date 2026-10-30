@@ -21,6 +21,7 @@ Requires-Dist: microban-sim
 Requires-Dist: microban
 Requires-Dist: climbing-sim
 Requires-Dist: mjlab-microban
+Requires-Dist: pyrealsense2>=2.59.1.11053
 Requires-Dist: meshcat>=0.3.2
 
 # rock-climbing-team-bee

@@ -1,1 +1,0 @@
-uv run python -m planner.main --wall N2 --mode plan --planning-mode theoretical --max-moves 128 --max-branches 300 --time-limit-s 300

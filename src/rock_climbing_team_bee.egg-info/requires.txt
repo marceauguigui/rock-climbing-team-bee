@@ -15,4 +15,5 @@ microban-sim
 microban
 climbing-sim
 mjlab-microban
+pyrealsense2>=2.59.1.11053
 meshcat>=0.3.2
