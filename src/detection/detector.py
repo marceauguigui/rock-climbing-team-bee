@@ -247,16 +247,11 @@ def create_occupation_matrix(image, positions=None, debug=False):
     mask = block_mask(board, scale)
 
     occupation = np.zeros((len(ys), len(xs)), dtype=np.uint8)
-    max_dist = MAX_HOLE_DIST_RATIO * HOLE_SPACING * scale
 
     for cx, cy in block_centroids(board, mask, scale):
         i = int(np.argmin(np.abs(xs - cx)))
         j = int(np.argmin(np.abs(ys - cy)))
-        d = np.hypot(xs[i] - cx, ys[j] - cy)
-        if d <= max_dist:
-            occupation[j, i] = 1
-        else:
-            print(f"Bloc ignoré : centre à {d / scale:.1f} mm du trou le plus proche")
+        occupation[j-1, i-1] = 1
 
     print(f"Matrice {occupation.shape[0]} x {occupation.shape[1]}, {occupation.sum()} blocs")
 
